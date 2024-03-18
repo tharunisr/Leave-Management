@@ -1,0 +1,105 @@
+﻿@model List<LeaveManagement.Entity.LeaveEntity>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/LayoutPage1.cshtml";
+}
+<div class="d-flex justify-content-between my-3 w-25 container-fluid">
+    @Html.DropDownList("leaveType", new SelectListItem[]
+     { new SelectListItem() { Text = "All", Value = "All", Selected=true },
+       new SelectListItem() { Text = "Approved", Value = "Approved" },
+     new SelectListItem() { Text = "Denied", Value = "Denied" },
+     new SelectListItem() { Text = "Pending", Value = "Pending"}},
+       new { onchange = "document.location.href = '/Leave/Index?leaveType=' + this.options[this.selectedIndex].value;" })
+    <p>Total Leaves: <span class="fw-bold">@ViewBag.TotalLeaveCount</span></p>
+
+</div>
+
+<table class="table">
+    <tr class="table-secondary">
+        <th>Name</th>
+        <th>From Date</th>
+        <th>To Date</th>
+        <th>Reasons</th>
+        <th>Status</th>
+        <th>Number of Days</th>
+        <th>Action</th>
+    </tr>
+    @foreach (var i in Model)
+    {
+        <tr>
+            <td>@Html.DisplayFor(temp => i.User.Name)</td>
+            <td>@Html.DisplayFor(temp => i.StartDate)</td>
+            <td>@Html.DisplayFor(temp => i.EndDate)</td>
+            <td>@Html.DisplayFor(temp => i.Reason)</td>
+            <td>
+                @if (i.Status == "Approved")
+                {
+                    <span class="badge bg-success">@Html.DisplayFor(temp => i.Status)</span>
+                }
+                else if (i.Status == "Pending")
+                {
+                    <span class="badge bg-warning">@Html.DisplayFor(temp => i.Status)</span>
+                }
+                else if (i.Status == "Denied")
+                {
+                    <span class="badge bg-danger">@Html.DisplayFor(temp => i.Status)</span>
+                }
+            </td>
+            <td>@Html.DisplayFor(temp => i.NumberOfDays)</td>
+            <td>
+                <button type="submit" class="btn btn-outline-secondary"
+                        onclick="location.href='@Url.Action("Update", "Leave", new { leaveId =i.LeaveId })'">
+                    Update
+                </button>
+            </td>
+        </tr>
+
+    }
+    @if (ViewBag.TotalLeaveCount == 0)
+    {
+        <tr>
+            <td colspan="8" class="text-center text-danger">No Leaves Found</td>
+        </tr>
+    }
+
+</table>
+
+
+@{
+    int prevpage = ViewBag.pageno - 1;
+    if (prevpage <= 0)
+    {
+        prevpage = 1;
+    }
+    int nextpage = ViewBag.pageno + 1;
+    if (nextpage > ViewBag.noofpage)
+    {
+        nextpage = ViewBag.noofpage;
+    }
+}
+@if (@ViewBag.TotalLeaveCount > 0)
+{
+    <ul class="pagination justify-content-center">
+        <li class="page-item">
+            <a class="page-link" href="/leave/index?pageno=@prevpage">Prev</a>
+        </li>
+        @for (int i = 0; i < ViewBag.noofpage; i++)
+        {
+            if ((i + 1) == ViewBag.pageno)
+            {
+                <li class="page-item active">
+                    <a class="page-link" href="/leave/index?pageno=@(i+1)">@(i+1)</a>
+                </li>
+            }
+            else
+            {
+                <li class="page-item">
+                    <a class="page-link" href="/leave/index?pageno=@(i+1)">@(i+1)</a>
+                </li>
+            }
+        }
+        <li class="page-item">
+            <a class="page-link" href="/leave/index?pageno=@nextpage"> Next</a>
+        </li>
+    </ul>
+}

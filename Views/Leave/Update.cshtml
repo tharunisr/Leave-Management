@@ -1,0 +1,61 @@
+﻿@model LeaveManagement.Entity.LeaveEntity
+@{
+    ViewBag.Title = "Update";
+    Layout = "~/Views/Shared/LayoutPage1.cshtml";
+}
+
+
+@using (Html.BeginForm("Update", "Leave", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <div class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="text-center" style="color: #212529; font-family: 'Times New Roman'">Update Leave</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                @Html.LabelFor(temp => temp.Reason)
+                                @Html.TextBoxFor(temp => temp.Reason, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(temp => temp.Reason)
+
+                            </div>
+                            <div class="form-group col-md-6">
+                                @Html.LabelFor(temp => temp.StartDate)
+                                @Html.EditorFor(model => model.StartDate, new { htmlAttributes = new { @class = "form-control datepicker", Placeholder = "Start Date" }})
+                                @Html.ValidationMessageFor(temp => temp.StartDate)
+                                @Html.ValidationMessage("LessthanEnd")
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="mb-3 col-md-6">
+                                @Html.LabelFor(temp => temp.EndDate)
+                                @Html.EditorFor(model => model.EndDate, new { htmlAttributes = new { @class = "form-control datepicker", Placeholder = "Start Date" } })
+                                @Html.ValidationMessageFor(temp => temp.EndDate)
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-success">Update</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+
+@section scripts{
+    <script src="~/Scripts/jquery-ui-1.13.2.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $('#datepicker').datepicker({
+                dateFormat: "dd-MM-yyyy",
+                changeMonth: true,
+            });
+        });
+    </script>
+}

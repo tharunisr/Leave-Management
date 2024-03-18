@@ -1,0 +1,88 @@
+﻿@model List<LeaveManagement.Entity.LeaveEntity>
+@{
+    ViewBag.Title = "GetStudentOrStaffLeaves";
+    Layout = "~/Views/Shared/LayoutPage1.cshtml";
+}
+
+<table class="table">
+    <tr class="table-secondary">
+        <th>Name</th>
+        <th>From Date</th>
+        <th>To Date</th>
+        <th>Reasons</th>
+        <th>Status</th>
+        <th>Number of Days</th>
+        <th>Action</th>
+    </tr>
+    @foreach (var i in Model)
+    {
+        <tr>
+            <td>@Html.DisplayFor(temp => i.User.Name)</td>
+            <td>@Html.DisplayFor(temp => i.StartDate)</td>
+            <td>@Html.DisplayFor(temp => i.EndDate)</td>
+            <td>@Html.DisplayFor(temp => i.Reason)</td>
+            <td>
+                @if (i.Status == "Approved")
+                {
+                    <span class="badge bg-success">@Html.DisplayFor(temp => i.Status)</span>
+                }
+                else if (i.Status == "Pending")
+                {
+                    <span class="badge bg-warning">@Html.DisplayFor(temp => i.Status)</span>
+                }
+                else if (i.Status == "Denied")
+                {
+                    <span class="badge bg-danger">@Html.DisplayFor(temp => i.Status)</span>
+                }
+            </td>
+            <td>@Html.DisplayFor(temp => i.NumberOfDays)</td>
+
+            <td>
+                <button type="button" class="btn btn-outline-success" onclick="location.href='@Url.Action("ApproveLeave", "Leave", new { leaveId =i.LeaveId })'">Approve</button>
+                <button type="button" class="btn btn-outline-danger" onclick="location.href='@Url.Action("DenyLeave","Leave",new { leaveId = i.LeaveId})'">Deny</button>
+
+            </td>
+        </tr>
+
+    }
+</table>
+
+
+@{
+    int prevpage = ViewBag.pageno - 1;
+    if (prevpage <= 0)
+    {
+        prevpage = 1;
+    }
+    int nextpage = ViewBag.pageno + 1;
+    if (nextpage > ViewBag.noofpage)
+    {
+        nextpage = ViewBag.noofpage;
+    }
+}
+@if (ViewBag.RequestLeaveCount>0)
+{
+    <ul class="pagination justify-content-center ">
+        <li class="page-item">
+            <a class="page-link" href="/leave/index?pageno=@prevpage">Prev</a>
+        </li>
+        @for (int i = 0; i < ViewBag.noofpage; i++)
+        {
+            if ((i + 1) == ViewBag.pageno)
+            {
+                <li class="page-item active">
+                    <a class="page-link" href="/leave/index?pageno=@(i + 1)">@(i + 1)</a>
+                </li>
+            }
+            else
+            {
+                <li class="page-item">
+                    <a class="page-link" href="/leave/index?pageno=@(i + 1)">@(i + 1)</a>
+                </li>
+            }
+        }
+        <li class="page-item">
+            <a class="page-link" href="/leave/index?pageno=@nextpage"> Next</a>
+        </li>
+    </ul>
+}
